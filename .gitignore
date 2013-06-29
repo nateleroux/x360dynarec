@@ -1,0 +1,10 @@
+*.suo
+.DS_Store
+*.vcxproj.user
+*.vcxproj.filters
+x360dynarec_test/Debug
+x360dynarec_test/Release
+x360dynarec/Debug
+x360dynarec/Release
+x360dynarec_codepages/Debug
+x360dynarec_codepages/Release
