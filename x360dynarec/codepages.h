@@ -21,11 +21,23 @@ extern "C" {
 #define CODEPAGE_64MB 64
 #define CODEPAGE_128MB 128
 
+// Initialize the code page subsystem
+VOID CodePage_Init();
+
+// Reserve a code section
 BOOL CodePage_ReserveSpace(DWORD SizeInMB);
 VOID CodePage_FreeReservedSpace();
 
+// Allocate/free executable pages
 PVOID CodePage_AllocatePage();
 VOID CodePage_FreePage(PVOID Page);
+
+// Block any allocate/free operations on other threads
+VOID CodePage_LockThread();
+VOID CodePage_UnlockThread();
+
+// Copy data into the code page(s)
+VOID CodePage_CopyData(PVOID Destination, PVOID Source, UINT Count);
 
 #ifdef __cplusplus
 }

@@ -1,52 +1,40 @@
 #include <xtl.h>
 #include <stdio.h>
 
-#include "codepages.h"
-
-void * begin_write(void * address, unsigned int * out_pte)
-{
-	return 0; // return MmDbgWriteCheck(address, (DWORD*)out_pte);
-}
-
-void end_write(void * address, unsigned int pte)
-{
-	// MmDbgReleaseAddress(address, pte);
-}
+#include "../x360dynarec/codepages.h"
 
 void main()
 {
-	HMODULE codepages = LoadLibrary("game:\\dynarec_support\\x360dynarec_codepages_8MB.xex");
-	if(codepages == NULL)
-		return;
+	CodePage_Init();
 
-	FARPROC proc = GetProcAddress(codepages, (LPCSTR)1);
-	proc = GetProcAddress(codepages, (LPCSTR)2);
-	proc = GetProcAddress(codepages, (LPCSTR)1);
-	if(proc == NULL)
+	// Reserve 8MB
+	if(!CodePage_ReserveSpace(CODEPAGE_8MB))
 	{
-		FreeLibrary(codepages);
+		printf("Failed to reserve space!\n");
 		return;
 	}
 
-	// Does it execute?
-	DWORD result = ((DWORD(*)())proc)();
+	PVOID page = CodePage_AllocatePage();
+	if(page == NULL)
+	{
+		printf("Failed to allocate page\n");
+		CodePage_FreeReservedSpace();
+		return;
+	}
 
-	printf("Result: %08x\n", result);
+	DWORD opcodes[] =
+	{
+		0x38600001, // li r3, 1
+		0x4E800020, // blr
+	};
 
-	DWORD * ptr;
-	unsigned int pte;
+	CodePage_CopyData(page, opcodes, 8);
+
+	printf("Function execution result: %i\n",
+		((int(*)())page)()
+		);
+
+	CodePage_FreePage(page);
 	
-	ptr = (DWORD*)begin_write(proc, &pte);
-	if(ptr)
-	{
-		*ptr = 0x38600001;
-		end_write(proc, pte);
-	}
-
-	// Does it execute?
-	result = ((DWORD(*)())proc)();
-
-	printf("Result: %08x\n", result);
-
-	printf("ptr = %08x\n", *ptr);
+	CodePage_FreeReservedSpace();
 }
