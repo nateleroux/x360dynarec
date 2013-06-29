@@ -1,0 +1,4 @@
+LIBRARY x360dynarec_codepages.dll
+EXPORTS
+	CodePages @1
+	CodePageSize @2

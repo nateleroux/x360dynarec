@@ -1,0 +1,25 @@
+
+#define CODE_PAGE_SIZE ( 8 * 1024 * 1024 ) // 8 MB
+
+// Define an executable section we can assign data to
+#pragma section( ".dynarec", execute )
+
+// Our code page(s), includes a simple 'return 0x1234;' program for fun
+extern "C" __declspec(allocate(".dynarec")) const unsigned char CodePages[CODE_PAGE_SIZE] = {
+	0x38, 0x60, 0x12, 0x34, // li, r3, 0x1234
+	0x4E, 0x80, 0x00, 0x20, // blr
+
+	0xDE, 0xAD, 0xBE, 0xEF,
+	0xAB, 0xAD, 0x1D, 0xEA,
+
+	// Natelx wuz here!
+	0x4E, 0x61, 0x74, 0x65,
+	0x6C, 0x78, 0x20, 0x77,
+	0x75, 0x7A, 0x20, 0x68,
+	0x65, 0x72, 0x65, 0x21,
+	
+	0x00
+};
+
+// How large our code page(s) are
+extern "C" const unsigned int CodePageSize = sizeof(CodePages);
