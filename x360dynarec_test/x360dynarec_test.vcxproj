@@ -236,10 +236,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="dynarec.c" />
+    <ClCompile Include="dynarec_ppc_xenon.c" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dynarec.h" />
+    <ClInclude Include="dynarec_ppc_xenon.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
